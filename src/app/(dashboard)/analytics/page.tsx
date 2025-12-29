@@ -1,19 +1,27 @@
 "use client";
 
-import { StatsOverview } from "@/components/dashboard/StatsOverview";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { useInsights } from "@/lib/hooks/useInsights";
+import { useCampaigns } from "@/lib/hooks/useCampaigns";
+import { useAllCampaignInsights } from "@/lib/hooks/useAllCampaignInsights";
 import { BarChart3, TrendingUp, Users, Target } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { ChartCard } from "@/components/analytics/ChartCard";
+import { StatusDonutChart } from "@/components/analytics/charts/StatusDonutChart";
+import { PlatformPieChart } from "@/components/analytics/charts/PlatformPieChart";
+import { FunnelChart } from "@/components/analytics/charts/FunnelChart";
+import { BudgetBarChart } from "@/components/analytics/charts/BudgetBarChart";
+import { PerformanceBarChart } from "@/components/analytics/charts/PerformanceBarChart";
 
 export default function AnalyticsPage() {
-  const { data: insights, isLoading } = useInsights();
+  const { data: insights, isLoading: insightsLoading } = useInsights();
+  const { data: campaigns, isLoading: campaignsLoading } = useCampaigns();
+  const { campaignsWithInsights, isLoading: combinedLoading } = useAllCampaignInsights();
+
+  const isLoading = insightsLoading || campaignsLoading || combinedLoading;
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
-
-  const formatNumber = (val: number) =>
-    new Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 1 }).format(val);
 
   return (
     <div className="space-y-6">
@@ -24,6 +32,7 @@ export default function AnalyticsPage() {
         </p>
       </div>
 
+      {/* Metric Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Total Spend"
@@ -51,20 +60,62 @@ export default function AnalyticsPage() {
         />
       </div>
 
-      {/* Placeholder for charts - future enhancement */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Trends</CardTitle>
-          <CardDescription>
-            Detailed analytics charts will be displayed here.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
-            <p className="text-sm text-muted-foreground">Charts coming soon</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Charts Grid */}
+      <div className="space-y-6">
+        {/* Distribution Charts */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <ChartCard
+            title="Campaign Status"
+            description="Distribution of campaign statuses"
+            isLoading={isLoading}
+          >
+            <StatusDonutChart
+              activeCampaigns={insights?.active_campaigns || 0}
+              pausedCampaigns={insights?.paused_campaigns || 0}
+              completedCampaigns={insights?.completed_campaigns || 0}
+            />
+          </ChartCard>
+
+          <ChartCard
+            title="Platform Breakdown"
+            description="Campaigns by advertising platform"
+            isLoading={isLoading}
+          >
+            <PlatformPieChart campaigns={campaigns || []} />
+          </ChartCard>
+        </div>
+
+        {/* Conversion Funnel */}
+        <ChartCard
+          title="Conversion Funnel"
+          description="Performance from impressions to conversions"
+          isLoading={isLoading}
+        >
+          <FunnelChart
+            impressions={insights?.total_impressions || 0}
+            clicks={insights?.total_clicks || 0}
+            conversions={insights?.total_conversions || 0}
+          />
+        </ChartCard>
+
+        {/* Budget Utilization */}
+        <ChartCard
+          title="Budget Utilization"
+          description="Campaign budget vs actual spend comparison"
+          isLoading={isLoading}
+        >
+          <BudgetBarChart campaigns={campaignsWithInsights} />
+        </ChartCard>
+
+        {/* Performance Comparison */}
+        <ChartCard
+          title="Top Performing Campaigns"
+          description="Campaigns ranked by performance metrics"
+          isLoading={isLoading}
+        >
+          <PerformanceBarChart campaigns={campaignsWithInsights} />
+        </ChartCard>
+      </div>
     </div>
   );
 }
