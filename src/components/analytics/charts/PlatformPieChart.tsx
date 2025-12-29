@@ -32,6 +32,7 @@ export function PlatformPieChart({ campaigns }: PlatformPieChartProps) {
           outerRadius={80}
           paddingAngle={2}
           dataKey="value"
+          activeShape={false}
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />

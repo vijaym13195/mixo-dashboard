@@ -43,6 +43,7 @@ export function FunnelChart({ impressions, clicks, conversions }: FunnelChartPro
           width={80}
         />
         <Tooltip
+          cursor={false}
           content={(props) => {
             const { active, payload } = props;
             if (!active || !payload || !payload.length) return null;

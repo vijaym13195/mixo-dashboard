@@ -43,6 +43,7 @@ export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
           width={100}
         />
         <Tooltip
+          cursor={false}
           content={(props) => {
             const { active, payload } = props;
             if (!active || !payload || !payload.length) return null;
