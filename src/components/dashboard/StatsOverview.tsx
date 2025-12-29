@@ -7,6 +7,7 @@ import { Activity, CreditCard, MousePointerClick, TrendingUp } from "lucide-reac
 export function StatsOverview() {
     const { data: insights, isLoading, error } = useInsights();
 
+
     if (error) {
         return (
             <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">
