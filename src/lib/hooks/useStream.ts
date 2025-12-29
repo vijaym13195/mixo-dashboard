@@ -21,7 +21,7 @@ export function useCampaignStream(id: string) {
                 setError(null);
             } catch (err) {
                 setError(err as Error);
-                console.error('SSE Parse Error:', err);
+                // Silent fail for parse errors - data will remain null and component falls back to initial insights
             }
         };
 
@@ -31,7 +31,8 @@ export function useCampaignStream(id: string) {
         };
 
         eventSource.onerror = (err) => {
-            console.error('SSE Error:', err);
+            // SSE is optional enhancement - silent fail since component falls back to initial insights
+            // Browser EventSource will call onerror when connection fails (often due to CORS)
             setIsConnected(false);
             setError(new Error('Stream connection failed'));
             eventSource.close();
