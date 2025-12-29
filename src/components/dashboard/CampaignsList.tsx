@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
@@ -29,12 +29,14 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useCampaigns } from "@/lib/hooks/useCampaigns";
+import { useDebounce } from "@/lib/hooks/useDebounce";
 import { useDashboardStore } from "@/lib/store/useDashboardStore";
 import { StatusBadge } from "./StatusBadge";
 import { PlatformBadge } from "./PlatformBadge";
 import { CampaignCard } from "./CampaignCard";
 import { LoadingState } from "./LoadingState";
 import { EmptyState } from "./EmptyState";
+import { ErrorState } from "./ErrorState";
 import {
     ArrowUpDown,
     Filter,
@@ -45,7 +47,7 @@ import {
 } from "lucide-react";
 
 export function CampaignsList() {
-    const { data: campaigns, isLoading, error } = useCampaigns();
+    const { data: campaigns, isLoading, error, refetch } = useCampaigns();
 
     const {
         filters,
@@ -55,9 +57,29 @@ export function CampaignsList() {
         setSearchQuery,
         setSort,
         setStatusFilter,
+        setPlatformFilter,
         setViewMode,
         resetFilters,
     } = useDashboardStore();
+
+    // ... (local search state logic) ...
+    // Local state for search debounce
+    const [localSearch, setLocalSearch] = useState(searchQuery);
+    const debouncedSearch = useDebounce(localSearch, 300);
+
+    // Sync debounced search with store
+    useEffect(() => {
+        setSearchQuery(debouncedSearch);
+    }, [debouncedSearch, setSearchQuery]);
+
+    // Update local state when store changes
+    useEffect(() => {
+        if (searchQuery !== localSearch && searchQuery === "") {
+            setLocalSearch("");
+        }
+    }, [searchQuery]);
+
+    const hasActiveFilters = searchQuery || filters.status.length > 0 || filters.platforms.length > 0;
 
     const filteredCampaigns = useMemo(() => {
         if (!campaigns) return [];
@@ -78,6 +100,13 @@ export function CampaignsList() {
             result = result.filter((c) => filters.status.includes(c.status));
         }
 
+        // Filter by platform
+        if (filters.platforms.length > 0) {
+            result = result.filter((c) =>
+                c.platforms.some((p) => filters.platforms.includes(p))
+            );
+        }
+
         // Sort
         result.sort((a, b) => {
             const aValue = a[sort.field];
@@ -89,15 +118,17 @@ export function CampaignsList() {
         });
 
         return result;
-    }, [campaigns, searchQuery, filters.status, sort]);
+    }, [campaigns, searchQuery, filters.status, filters.platforms, sort]);
 
     if (isLoading) return <LoadingState />;
 
     if (error) {
         return (
-            <div className="flex h-40 items-center justify-center rounded-lg border border-destructive/50 bg-destructive/10 text-destructive">
-                Error loading campaigns. Please try again.
-            </div>
+            <ErrorState
+                title="Failed to load campaigns"
+                description="We encountered an issue fetching your campaigns data. Please check your connection and try again."
+                retry={refetch}
+            />
         );
     }
 
@@ -110,28 +141,36 @@ export function CampaignsList() {
         }
     };
 
+    const isCampaignsEmpty = !campaigns || campaigns.length === 0;
+
     return (
         <div className="space-y-4">
-            {/* Controls Bar */}
+            {/* Controls Bar - Hide if no campaigns at all (and no filters active to avoid locking user out if API returns empty but it's not an error) 
+               Actually, if there are no campaigns, we probably still want to show controls or at least the empty state should be clear. 
+               Let's keep controls but maybe disabled? No, keep them. 
+            */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* ... controls ... */}
                 <div className="flex flex-1 items-center gap-2">
                     <div className="relative w-full max-w-sm">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder="Search campaigns..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            value={localSearch}
+                            onChange={(e) => setLocalSearch(e.target.value)}
                             className="pl-9"
+                            disabled={isCampaignsEmpty}
                         />
                     </div>
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className="shrink-0">
+                            <Button variant="outline" size="icon" className="shrink-0" disabled={isCampaignsEmpty}>
                                 <Filter className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-48">
+                        {/* ... dropdown content ... */}
+                        <DropdownMenuContent align="start" className="w-56">
                             <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             {['active', 'paused', 'completed'].map((status) => (
@@ -149,15 +188,34 @@ export function CampaignsList() {
                                     {status}
                                 </DropdownMenuCheckboxItem>
                             ))}
-                            {filters.status.length > 0 && (
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Filter by Platform</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {['meta', 'google', 'linkedin'].map((platform) => (
+                                <DropdownMenuCheckboxItem
+                                    key={platform}
+                                    checked={filters.platforms.includes(platform)}
+                                    onCheckedChange={(checked) => {
+                                        const newPlatforms = checked
+                                            ? [...filters.platforms, platform]
+                                            : filters.platforms.filter((p) => p !== platform);
+                                        setPlatformFilter(newPlatforms);
+                                    }}
+                                    className="capitalize"
+                                >
+                                    {platform}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+
+                            {(filters.status.length > 0 || filters.platforms.length > 0) && (
                                 <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuCheckboxItem
                                         checked={false}
-                                        onCheckedChange={() => setStatusFilter([])}
+                                        onCheckedChange={resetFilters}
                                         className="text-muted-foreground"
                                     >
-                                        Clear Filters
+                                        Clear All Filters
                                     </DropdownMenuCheckboxItem>
                                 </>
                             )}
@@ -168,7 +226,9 @@ export function CampaignsList() {
                     <Select
                         value={sort.field}
                         onValueChange={(val) => setSort({ ...sort, field: val as any })}
+                        disabled={isCampaignsEmpty}
                     >
+                        {/* ... select content ... */}
                         <SelectTrigger className="w-[140px] hidden sm:flex">
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -206,8 +266,18 @@ export function CampaignsList() {
             {/* Content */}
             {filteredCampaigns.length === 0 ? (
                 <EmptyState
-                    onAction={resetFilters}
-                    actionLabel="Reset Filters & Search"
+                    title={hasActiveFilters ? "No matching campaigns" : "No campaigns yet"}
+                    description={
+                        hasActiveFilters
+                            ? "Try adjusting your filters or search query to find what you're looking for."
+                            : "Get started by creating your first marketing campaign."
+                    }
+                    actionLabel={hasActiveFilters ? "Reset Filters" : "Create Campaign"}
+                    onAction={
+                        hasActiveFilters
+                            ? () => { resetFilters(); setLocalSearch(""); }
+                            : undefined // Logic for create campaign is in Page header, so maybe no action here or navigation
+                    }
                 />
             ) : viewMode === "grid" ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -218,6 +288,7 @@ export function CampaignsList() {
             ) : (
                 <div className="rounded-md border">
                     <Table>
+                        {/* ... table ... */}
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[250px]">

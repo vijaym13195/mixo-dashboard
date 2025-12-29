@@ -10,16 +10,36 @@ import {
     Menu,
     RefreshCw,
     Bell,
+    Clock,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
 
 export function Header() {
     const { setTheme, theme } = useTheme();
-    const { toggleSidebar } = useUIStore();
+    const { toggleSidebar, autoRefresh, setAutoRefresh, refreshInterval } = useUIStore();
     const queryClient = useQueryClient();
+    const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
     const handleRefresh = () => {
         queryClient.invalidateQueries();
+        setLastUpdated(new Date());
     };
+
+    useEffect(() => {
+        if (!autoRefresh) return;
+        const interval = setInterval(handleRefresh, refreshInterval);
+        return () => clearInterval(interval);
+    }, [autoRefresh, refreshInterval, queryClient]);
 
     return (
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:h-[60px] lg:px-6">
@@ -34,15 +54,38 @@ export function Header() {
             </Button>
 
             <div className="flex flex-1 items-center justify-end gap-2">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleRefresh}
-                    title="Refresh Data"
-                >
-                    <RefreshCw className="h-4 w-4" />
-                    <span className="sr-only">Refresh</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground hidden sm:inline-block">
+                        Updated {format(lastUpdated, "h:mm a")}
+                    </span>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className={autoRefresh ? "text-primary" : ""}
+                                title="Data Settings"
+                            >
+                                <RefreshCw className={`h-4 w-4 ${autoRefresh ? "animate-spin-slow" : ""}`} />
+                                <span className="sr-only">Refresh</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={handleRefresh}>
+                                <RefreshCw className="mr-2 h-4 w-4" />
+                                Refresh Now
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuCheckboxItem
+                                checked={autoRefresh}
+                                onCheckedChange={setAutoRefresh}
+                            >
+                                Auto Refresh (30s)
+                            </DropdownMenuCheckboxItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
 
                 <Button variant="ghost" size="icon">
                     <Bell className="h-4 w-4" />
