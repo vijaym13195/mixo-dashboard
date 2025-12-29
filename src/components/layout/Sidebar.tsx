@@ -8,7 +8,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUIStore } from "@/lib/store/useUIStore";
 import {
     Megaphone,
-    Settings,
     BarChart3,
     X,
 } from "lucide-react";
@@ -31,12 +30,6 @@ export function Sidebar({ className }: SidebarProps) {
             icon: BarChart3,
             href: "/analytics",
             active: pathname.startsWith("/analytics"),
-        },
-        {
-            label: "Settings",
-            icon: Settings,
-            href: "/settings",
-            active: pathname.startsWith("/settings"),
         },
     ];
 
