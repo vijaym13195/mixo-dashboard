@@ -6,7 +6,7 @@ interface DashboardFilters {
 }
 
 interface DashboardSort {
-    field: 'name' | 'budget' | 'spend' | 'created_at' | 'status';
+    field: 'name' | 'budget' | 'created_at' | 'status';
     order: 'asc' | 'desc';
 }
 

@@ -280,7 +280,7 @@ User Interaction
   - Key metrics: CTR, CPC, conversion rate
 
 ### Phase 4: UI Components - Campaigns List (Day 3)
-- [ ] **Task 4.1:** Create CampaignsList component
+- [x] **Task 4.1:** Create CampaignsList component
   - Use `useDashboardStore` for filter/sort/search state
   - Use `useCampaigns()` hook for API data
   - Table/Grid view toggle using `setViewMode` action
@@ -289,14 +289,14 @@ User Interaction
   - Search functionality using `setSearchQuery` action
   - Pagination
 
-- [ ] **Task 4.2:** Create CampaignCard component
+- [x] **Task 4.2:** Create CampaignCard component
   - Display campaign info from API data
   - Show platforms
   - Display budget info
   - Status indicator
   - Link to detail page
 
-- [ ] **Task 4.3:** Add row actions
+- [x] **Task 4.3:** Add row actions
   - View details link
   - Hover effects
 
