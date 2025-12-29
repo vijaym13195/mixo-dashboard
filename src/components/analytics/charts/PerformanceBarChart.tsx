@@ -85,14 +85,12 @@ export function PerformanceBarChart({ campaigns }: PerformanceBarChartProps) {
           <XAxis
             type="number"
             tickFormatter={config.formatter}
-            stroke="hsl(var(--muted-foreground))"
             fontSize={12}
           />
           <YAxis
             type="category"
             dataKey="name"
             tickFormatter={(value) => truncateName(value as string, 30)}
-            stroke="hsl(var(--muted-foreground))"
             fontSize={11}
             width={100}
           />

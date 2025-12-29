@@ -31,14 +31,12 @@ export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
         <XAxis
           type="number"
           tickFormatter={formatCurrency}
-          stroke="hsl(var(--muted-foreground))"
           fontSize={12}
         />
         <YAxis
           type="category"
           dataKey="name"
           tickFormatter={(value) => truncateName(value as string, 25)}
-          stroke="hsl(var(--muted-foreground))"
           fontSize={11}
           width={100}
         />

@@ -32,13 +32,11 @@ export function FunnelChart({ impressions, clicks, conversions }: FunnelChartPro
         <XAxis
           type="number"
           tickFormatter={formatCompactNumber}
-          stroke="hsl(var(--muted-foreground))"
           fontSize={12}
         />
         <YAxis
           type="category"
           dataKey="stage"
-          stroke="hsl(var(--muted-foreground))"
           fontSize={12}
           width={80}
         />
