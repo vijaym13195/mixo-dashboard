@@ -13,8 +13,8 @@ import { useCampaign } from "@/lib/hooks/useCampaigns";
 import { useCampaignInsights } from "@/lib/hooks/useInsights";
 import { useCampaignStream } from "@/lib/hooks/useStream";
 
-import { StatusBadge } from "@/components/dashboard/StatusBadge";
-import { PlatformBadge } from "@/components/dashboard/PlatformBadge";
+import { StatusBadge } from "@/components/campaigns/StatusBadge";
+import { PlatformBadge } from "@/components/campaigns/PlatformBadge";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -49,7 +49,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                     </AlertDescription>
                 </Alert>
                 <Button variant="outline" asChild>
-                    <Link href="/">Back to Dashboard</Link>
+                    <Link href="/campaigns">Back to Campaigns</Link>
                 </Button>
             </div>
         )
@@ -89,7 +89,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <Button variant="ghost" size="icon" className="-ml-2 h-8 w-8" asChild>
-                            <Link href="/">
+                            <Link href="/campaigns">
                                 <ArrowLeft className="h-4 w-4" />
                             </Link>
                         </Button>
