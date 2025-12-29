@@ -79,8 +79,8 @@ export function PerformanceBarChart({ campaigns }: PerformanceBarChartProps) {
         </TabsList>
       </Tabs>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data} layout="vertical" barCategoryGap={4}>
+      <ResponsiveContainer width="100%" height={450}>
+        <BarChart data={data} layout="vertical" barCategoryGap={15}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis
             type="number"

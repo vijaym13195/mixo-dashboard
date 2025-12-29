@@ -25,8 +25,8 @@ export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} barCategoryGap={8} layout="vertical">
+    <ResponsiveContainer width="100%" height={350}>
+      <BarChart data={data} barCategoryGap={25} layout="vertical">
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
         <XAxis
           type="number"

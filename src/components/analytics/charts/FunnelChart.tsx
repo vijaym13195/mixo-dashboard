@@ -26,8 +26,8 @@ export function FunnelChart({ impressions, clicks, conversions }: FunnelChartPro
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} layout="vertical" barCategoryGap={20}>
+    <ResponsiveContainer width="100%" height={400}>
+      <BarChart data={data} layout="vertical" barCategoryGap={40}>
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
         <XAxis
           type="number"
