@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -30,14 +31,19 @@ export function Header() {
     const queryClient = useQueryClient();
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-    const handleRefresh = () => {
+    const refreshData = (showToast = false) => {
         queryClient.invalidateQueries();
         setLastUpdated(new Date());
+        if (showToast) {
+            toast.success("Dashboard refreshed", {
+                description: "Latest data has been fetched.",
+            });
+        }
     };
 
     useEffect(() => {
         if (!autoRefresh) return;
-        const interval = setInterval(handleRefresh, refreshInterval);
+        const interval = setInterval(() => refreshData(false), refreshInterval);
         return () => clearInterval(interval);
     }, [autoRefresh, refreshInterval, queryClient]);
 
@@ -72,7 +78,7 @@ export function Header() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={handleRefresh}>
+                            <DropdownMenuItem onClick={() => refreshData(true)}>
                                 <RefreshCw className="mr-2 h-4 w-4" />
                                 Refresh Now
                             </DropdownMenuItem>
