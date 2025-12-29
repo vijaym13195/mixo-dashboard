@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUIStore } from "@/lib/store/useUIStore";
 import {
-    LayoutDashboard,
     Megaphone,
     Settings,
     BarChart3,
@@ -22,16 +21,10 @@ export function Sidebar({ className }: SidebarProps) {
 
     const routes = [
         {
-            label: "Dashboard",
-            icon: LayoutDashboard,
-            href: "/",
-            active: pathname === "/",
-        },
-        {
             label: "Campaigns",
             icon: Megaphone,
-            href: "/campaigns",
-            active: pathname.startsWith("/campaigns"),
+            href: "/",
+            active: pathname === "/" || pathname.startsWith("/campaign/"),
         },
         {
             label: "Analytics",

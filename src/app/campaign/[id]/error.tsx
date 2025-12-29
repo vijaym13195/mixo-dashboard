@@ -21,7 +21,7 @@ export default function CampaignDetailError({
       </Alert>
       <div className="flex gap-2">
         <Button variant="outline" asChild>
-          <Link href="/campaigns">Back to Campaigns</Link>
+          <Link href="/">Back to Campaigns</Link>
         </Button>
         <Button onClick={() => window.location.reload()}>Retry</Button>
       </div>

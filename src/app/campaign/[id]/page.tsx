@@ -49,7 +49,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                     </AlertDescription>
                 </Alert>
                 <Button variant="outline" asChild>
-                    <Link href="/campaigns">Back to Campaigns</Link>
+                    <Link href="/">Back to Campaigns</Link>
                 </Button>
             </div>
         )
@@ -89,7 +89,7 @@ export default function CampaignDetailPage({ params }: CampaignDetailPageProps) 
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <Button variant="ghost" size="icon" className="-ml-2 h-8 w-8" asChild>
-                            <Link href="/campaigns">
+                            <Link href="/">
                                 <ArrowLeft className="h-4 w-4" />
                             </Link>
                         </Button>
