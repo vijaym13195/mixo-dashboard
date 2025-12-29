@@ -157,3 +157,26 @@
   border-color: transparent !important;
   border-width: 0 !important;
 }
+
+/* Ensure Recharts text and labels are visible in both light and dark modes */
+.recharts-cartesian-axis-tick text,
+.recharts-legend-item-text,
+.recharts-label,
+.recharts-text,
+.recharts-default-tooltip,
+.recharts-tooltip-item,
+.recharts-tooltip-label {
+  fill: var(--foreground) !important;
+  color: var(--foreground) !important;
+}
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--border) !important;
+  stroke-opacity: 0.5;
+}
+
+.recharts-custom-label {
+  fill: var(--foreground) !important;
+  font-weight: 500;
+}
