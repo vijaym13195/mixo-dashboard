@@ -22,7 +22,8 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-    DropdownMenuCheckboxItem,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 
 export function Header() {
@@ -83,12 +84,20 @@ export function Header() {
                                 Refresh Now
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuCheckboxItem
-                                checked={autoRefresh}
-                                onCheckedChange={setAutoRefresh}
+                            <DropdownMenuLabel>Auto Refresh</DropdownMenuLabel>
+                            <DropdownMenuRadioGroup
+                                value={autoRefresh ? "on" : "off"}
+                                onValueChange={(val) => setAutoRefresh(val === "on")}
                             >
-                                Auto Refresh (30s)
-                            </DropdownMenuCheckboxItem>
+                                <DropdownMenuRadioItem value="off">
+                                    <Clock className="mr-2 h-3.5 w-3.5" />
+                                    Disabled
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="on">
+                                    <RefreshCw className="mr-2 h-3.5 w-3.5" />
+                                    Enabled (30s)
+                                </DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
