@@ -1,38 +1,59 @@
 /**
- * Chart color mappings using CSS variables
- * Maps to the existing --chart-1 through --chart-5 variables in globals.css
+ * Chart color mappings
+ * Using direct HSL values that work in both light and dark modes
+ * These vibrant colors ensure charts are visible in any theme
  */
 
-// Main chart colors from CSS variables
+// Main chart colors - 7 distinct vibrant colors for all themes
 export const CHART_COLORS = [
-  'hsl(var(--chart-1))',  // Orange/Gold - oklch(0.646 0.222 41.116)
-  'hsl(var(--chart-2))',  // Teal/Cyan - oklch(0.6 0.118 184.704)
-  'hsl(var(--chart-3))',  // Deep Blue - oklch(0.398 0.07 227.392)
-  'hsl(var(--chart-4))',  // Lime Green - oklch(0.828 0.189 84.429)
-  'hsl(var(--chart-5))',  // Yellow-Green - oklch(0.769 0.188 70.08)
+  'hsl(25, 95%, 53%)',    // Orange/Coral
+  'hsl(210, 80%, 52%)',   // Blue
+  'hsl(142, 76%, 36%)',   // Green
+  'hsl(280, 65%, 55%)',   // Purple/Pink
+  'hsl(45, 93%, 47%)',    // Gold
+  'hsl(265, 75%, 55%)',   // Violet
+  'hsl(180, 65%, 55%)',   // Cyan
 ];
 
-// Platform-specific colors (consistent with existing PlatformBadge component)
+// Platform-specific colors
 export const PLATFORM_COLORS: Record<string, string> = {
-  meta: 'hsl(var(--chart-1))',
-  google: 'hsl(var(--chart-2))',
-  linkedin: 'hsl(var(--chart-3))',
-  other: 'hsl(var(--chart-4))',
+  meta: 'hsl(25, 95%, 53%)',      // Orange/Coral
+  google: 'hsl(210, 80%, 52%)',   // Blue
+  linkedin: 'hsl(142, 76%, 36%)', // Green
+  tiktok: 'hsl(280, 65%, 55%)',   // Purple/Pink
+  twitter: 'hsl(45, 93%, 47%)',   // Gold
+  other: 'hsl(265, 75%, 55%)',    // Violet
 };
 
-// Status colors (consistent with existing StatusBadge component)
+// Status colors for campaign states
 export const STATUS_COLORS: Record<string, string> = {
-  active: 'hsl(142.1 76.2% 36.3%)',    // Green
-  paused: 'hsl(32.1 95.6% 44.2%)',     // Orange
-  completed: 'hsl(240 4.8% 46.1%)',   // Gray
+  active: 'hsl(142, 76%, 36%)',   // Green
+  paused: 'hsl(25, 95%, 53%)',    // Orange
+  completed: 'hsl(220, 15%, 45%)', // Gray
 };
 
 // Gradient colors for funnel charts
 export const FUNNEL_COLORS = [
-  'hsl(var(--chart-1))',  // Widest stage
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',  // Narrowest stage
+  'hsl(25, 95%, 53%)',    // Widest stage - Orange
+  'hsl(210, 80%, 52%)',   // Middle - Blue
+  'hsl(142, 76%, 36%)',   // Narrowest - Green
 ];
 
 // Default color fallback
-export const DEFAULT_COLOR = 'hsl(var(--chart-1))';
+export const DEFAULT_COLOR = 'hsl(25, 95%, 53%)';
+
+// Additional color mappings for different chart types
+export const BUDGET_COLORS = {
+  budget: 'hsl(45, 93%, 47%)',  // Gold for budget
+  spend: 'hsl(25, 95%, 53%)',   // Orange for spend
+};
+
+export const PERFORMANCE_COLORS = [
+  'hsl(210, 80%, 52%)',   // Primary metric
+  'hsl(142, 76%, 36%)',
+  'hsl(280, 65%, 55%)',
+  'hsl(45, 93%, 47%)',
+  'hsl(265, 75%, 55%)',
+  'hsl(180, 65%, 55%)',
+];
+

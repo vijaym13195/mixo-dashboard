@@ -1,4 +1,4 @@
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { transformToFunnelData } from '../utils/dataTransformers';
 import { AggregateInsights } from '@/lib/types';
 import { formatCompactNumber, formatPercentage } from '../utils/chartFormatters';
@@ -60,12 +60,11 @@ export function FunnelChart({ impressions, clicks, conversions }: FunnelChartPro
             );
           }}
         />
-        <Bar
-          dataKey="count"
-          fill={FUNNEL_COLORS[0]}
-          radius={[0, 8, 8, 0]}
-          name="Count"
-        />
+        <Bar dataKey="count" radius={[0, 8, 8, 0]} name="Count">
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={FUNNEL_COLORS[index % FUNNEL_COLORS.length]} />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );

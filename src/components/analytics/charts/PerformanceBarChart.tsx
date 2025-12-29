@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Campaign, CampaignInsight } from '@/lib/types';
 import { transformToPerformanceData } from '../utils/dataTransformers';
 import { formatCompactNumber, formatCurrency, formatPercentage } from '../utils/chartFormatters';
-import { CHART_COLORS } from '../utils/chartColors';
+import { PERFORMANCE_COLORS } from '../utils/chartColors';
 
 interface PerformanceBarChartProps {
   campaigns: Array<Campaign & { insights?: CampaignInsight }>;
@@ -112,7 +112,7 @@ export function PerformanceBarChart({ campaigns }: PerformanceBarChartProps) {
               );
             }}
           />
-          <Bar dataKey="value" fill={CHART_COLORS[0]} radius={[0, 8, 8, 0]} />
+          <Bar dataKey="value" fill={PERFORMANCE_COLORS[0]} radius={[0, 8, 8, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

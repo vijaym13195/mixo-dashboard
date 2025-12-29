@@ -2,7 +2,7 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Responsive
 import { Campaign, CampaignInsight } from '@/lib/types';
 import { transformToBudgetComparison } from '../utils/dataTransformers';
 import { formatCurrency, formatPercentage } from '../utils/chartFormatters';
-import { CHART_COLORS } from '../utils/chartColors';
+import { BUDGET_COLORS } from '../utils/chartColors';
 
 interface BudgetBarChartProps {
   campaigns: Array<Campaign & { insights?: CampaignInsight }>;
@@ -64,8 +64,8 @@ export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
           }}
         />
         <Legend />
-        <Bar dataKey="budget" fill={CHART_COLORS[2]} name="Budget" radius={[0, 0, 0, 8]} />
-        <Bar dataKey="spend" fill={CHART_COLORS[0]} name="Spend" radius={[0, 0, 0, 8]} />
+        <Bar dataKey="budget" fill={BUDGET_COLORS.budget} name="Budget" radius={[0, 0, 0, 8]} />
+        <Bar dataKey="spend" fill={BUDGET_COLORS.spend} name="Spend" radius={[0, 0, 0, 8]} />
       </BarChart>
     </ResponsiveContainer>
   );
