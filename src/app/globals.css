@@ -69,13 +69,20 @@
   --input: oklch(0.928 0.006 264.531);
   --ring: oklch(0.707 0.022 261.325);
   /* Chart colors - Light mode - vibrant and distinct */
-  --chart-1: oklch(0.70 0.22 30);       /* Orange/Coral */
-  --chart-2: oklch(0.65 0.18 200);      /* Blue */
-  --chart-3: oklch(0.55 0.22 140);      /* Green */
-  --chart-4: oklch(0.68 0.20 320);      /* Purple/Pink */
-  --chart-5: oklch(0.72 0.18 45);       /* Gold */
-  --chart-6: oklch(0.60 0.24 270);      /* Violet */
-  --chart-7: oklch(0.75 0.15 180);      /* Cyan */
+  --chart-1: oklch(0.70 0.22 30);
+  /* Orange/Coral */
+  --chart-2: oklch(0.65 0.18 200);
+  /* Blue */
+  --chart-3: oklch(0.55 0.22 140);
+  /* Green */
+  --chart-4: oklch(0.68 0.20 320);
+  /* Purple/Pink */
+  --chart-5: oklch(0.72 0.18 45);
+  /* Gold */
+  --chart-6: oklch(0.60 0.24 270);
+  /* Violet */
+  --chart-7: oklch(0.75 0.15 180);
+  /* Cyan */
   --sidebar: oklch(0.985 0.002 247.839);
   --sidebar-foreground: oklch(0.13 0.028 261.692);
   --sidebar-primary: oklch(0.21 0.034 264.665);
@@ -106,13 +113,20 @@
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.551 0.027 264.364);
   /* Chart colors - Dark mode - higher lightness for better visibility */
-  --chart-1: oklch(0.75 0.22 30);       /* Orange/Coral - brighter */
-  --chart-2: oklch(0.70 0.18 200);      /* Blue - brighter */
-  --chart-3: oklch(0.65 0.22 140);      /* Green - brighter */
-  --chart-4: oklch(0.75 0.20 320);      /* Purple/Pink - brighter */
-  --chart-5: oklch(0.78 0.18 45);       /* Gold - brighter */
-  --chart-6: oklch(0.70 0.24 270);      /* Violet - brighter */
-  --chart-7: oklch(0.80 0.15 180);      /* Cyan - brighter */
+  --chart-1: oklch(0.75 0.22 30);
+  /* Orange/Coral - brighter */
+  --chart-2: oklch(0.70 0.18 200);
+  /* Blue - brighter */
+  --chart-3: oklch(0.65 0.22 140);
+  /* Green - brighter */
+  --chart-4: oklch(0.75 0.20 320);
+  /* Purple/Pink - brighter */
+  --chart-5: oklch(0.78 0.18 45);
+  /* Gold - brighter */
+  --chart-6: oklch(0.70 0.24 270);
+  /* Violet - brighter */
+  --chart-7: oklch(0.80 0.15 180);
+  /* Cyan - brighter */
   --sidebar: oklch(0.21 0.034 264.665);
   --sidebar-foreground: oklch(0.985 0.002 247.839);
   --sidebar-primary: oklch(0.75 0.22 30);
@@ -127,7 +141,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Remove focus outline and border from Recharts components (the "click border") */
+.recharts-surface:focus,
+.recharts-wrapper:focus,
+.recharts-responsive-container:focus,
+.recharts-wrapper *,
+.recharts-surface * {
+  outline: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
 }
