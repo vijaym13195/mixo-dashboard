@@ -246,20 +246,20 @@ User Interaction
 - [x] **Task 1.7:** Set up environment variables
 
 ### Phase 2: API Integration with React Query (Day 1-2)
-- [ ] **Task 2.1:** Create custom hooks for campaigns listing
+- [x] **Task 2.1:** Create custom hooks for campaigns listing
   - `useCampaigns()` - Get all campaigns with caching
   - `useCampaign(id)` - Get single campaign details
   - `useInsights()` - Get aggregate insights
   - `useCampaignInsights(id)` - Get campaign-specific insights
   - `useCampaignStream(id)` - Handle SSE streaming
   
-- [ ] **Task 2.2:** Configure React Query:
+- [x] **Task 2.2:** Configure React Query:
   - Set cache times (staleTime, cacheTime)
   - Configure retry logic
   - Setup error handling
   - Enable/disable refetching
 
-- [ ] **Task 2.3:** Implement error boundaries & error states
+- [x] **Task 2.3:** Implement error boundaries & error states
 
 ### Phase 3: UI Components - Core (Day 2-3)
 - [ ] **Task 3.1:** Create layout structure
