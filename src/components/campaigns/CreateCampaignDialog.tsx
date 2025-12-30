@@ -32,7 +32,7 @@ export function CreateCampaignDialog() {
                     <span className="hidden sm:inline">Create Campaign</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="max-w-[95vw] sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create New Campaign</DialogTitle>
                     <DialogDescription>

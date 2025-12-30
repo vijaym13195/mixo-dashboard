@@ -107,7 +107,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                         )}
                     />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
                             name="brand_id"
@@ -196,7 +196,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
                             name="budget"
@@ -245,7 +245,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                                 <div className="mb-4">
                                     <FormLabel className="text-base">Platforms</FormLabel>
                                 </div>
-                                <div className="grid grid-cols-2 gap-2 rounded-lg border p-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-4">
                                     {platforms.map((platform) => (
                                         <FormField
                                             key={platform.id}
