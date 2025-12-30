@@ -83,6 +83,7 @@ export function Sidebar({ className }: SidebarProps) {
                                     "w-full justify-start gap-3",
                                     route.active && "bg-secondary font-medium"
                                 )}
+                                onClick={() => setSidebarOpen(false)}
                                 asChild
                             >
                                 <Link href={route.href}>

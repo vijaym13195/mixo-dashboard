@@ -54,17 +54,21 @@ export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
             if (!active || !payload || !payload.length) return null;
             const payloadData = payload[0].payload as typeof data[0];
             return (
-              <div className="rounded-lg border bg-card p-3 shadow-md">
-                <p className="font-semibold" title={payloadData.name}>{truncateName(payloadData.name, 30)}</p>
-                <p className="text-sm text-muted-foreground">
-                  Budget: {formatCurrency(payloadData.budget)}
+              <div className={`rounded-lg border bg-card shadow-md ${isMobile ? 'p-2' : 'p-3'}`}>
+                <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-semibold`} title={payloadData.name}>
+                  {truncateName(payloadData.name, isMobile ? 20 : 30)}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Spend: {formatCurrency(payloadData.spend)}
-                </p>
-                <p className={`text-sm font-medium ${payloadData.utilization > 100 ? 'text-destructive' : ''}`}>
-                  Utilization: {formatPercentage(payloadData.utilization)}
-                </p>
+                <div className={`${isMobile ? 'mt-1' : 'mt-2'} space-y-0.5`}>
+                  <p className={`${isMobile ? 'text-[10px]' : 'text-sm'} text-muted-foreground`}>
+                    Budget: {formatCurrency(payloadData.budget)}
+                  </p>
+                  <p className={`${isMobile ? 'text-[10px]' : 'text-sm'} text-muted-foreground`}>
+                    Spend: {formatCurrency(payloadData.spend)}
+                  </p>
+                  <p className={`${isMobile ? 'text-[10px]' : 'text-sm'} font-medium ${payloadData.utilization > 100 ? 'text-destructive' : ''}`}>
+                    Util: {formatPercentage(payloadData.utilization)}
+                  </p>
+                </div>
               </div>
             );
           }}

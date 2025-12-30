@@ -55,14 +55,16 @@ export function FunnelChart({ impressions, clicks, conversions }: FunnelChartPro
             if (!active || !payload || !payload.length) return null;
             const data = payload[0].payload;
             return (
-              <div className="rounded-lg border bg-card p-3 shadow-md">
+              <div className={`rounded-lg border bg-card shadow-md ${isMobile ? 'p-2 text-[10px]' : 'p-3 text-sm'}`}>
                 <p className="font-semibold">{data.stage}</p>
-                <p className="text-sm text-muted-foreground">
-                  Count: {formatCompactNumber(data.count)}
-                </p>
-                <p className="text-sm">
-                  Rate: <span className="font-medium">{formatPercentage(data.rate)}</span>
-                </p>
+                <div className={`${isMobile ? 'mt-0.5' : 'mt-2'} space-y-0.5`}>
+                  <p className="text-muted-foreground">
+                    Count: {formatCompactNumber(data.count)}
+                  </p>
+                  <p>
+                    Rate: <span className="font-medium">{formatPercentage(data.rate)}</span>
+                  </p>
+                </div>
               </div>
             );
           }}

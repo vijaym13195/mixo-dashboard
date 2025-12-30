@@ -13,7 +13,7 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>((set) => ({
-    sidebarOpen: true,
+    sidebarOpen: false,
     autoRefresh: false,
     refreshInterval: 30000, // 30 seconds
 

@@ -53,6 +53,8 @@ export function PlatformPieChart({ campaigns }: PlatformPieChartProps) {
             backgroundColor: 'hsl(var(--card))',
             border: '1px solid hsl(var(--border))',
             borderRadius: '8px',
+            fontSize: isMobile ? '10px' : '12px',
+            padding: isMobile ? '4px 8px' : '8px 12px',
           }}
         />
         <Legend

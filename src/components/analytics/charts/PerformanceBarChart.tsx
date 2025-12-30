@@ -108,9 +108,11 @@ export function PerformanceBarChart({ campaigns }: PerformanceBarChartProps) {
               if (!active || !payload || !payload.length) return null;
               const payloadData = payload[0].payload as typeof data[0];
               return (
-                <div className="rounded-lg border bg-card p-3 shadow-md">
-                  <p className="font-semibold" title={payloadData.name}>{truncateName(payloadData.name, 35)}</p>
-                  <p className="text-sm">
+                <div className={`rounded-lg border bg-card shadow-md ${isMobile ? 'p-2' : 'p-3'}`}>
+                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-semibold`} title={payloadData.name}>
+                    {truncateName(payloadData.name, isMobile ? 20 : 35)}
+                  </p>
+                  <p className={`${isMobile ? 'text-[10px]' : 'text-sm'} mt-1`}>
                     <span className="text-muted-foreground">{config.label}:</span>{' '}
                     <span className="font-medium">{config.formatter(payloadData.value)}</span>
                   </p>
