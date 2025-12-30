@@ -3,6 +3,7 @@ import { transformToFunnelData } from '../utils/dataTransformers';
 import { AggregateInsights } from '@/lib/types';
 import { formatCompactNumber, formatPercentage } from '../utils/chartFormatters';
 import { FUNNEL_COLORS } from '../utils/chartColors';
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 
 interface FunnelChartProps {
   impressions: number;
@@ -11,6 +12,8 @@ interface FunnelChartProps {
 }
 
 export function FunnelChart({ impressions, clicks, conversions }: FunnelChartProps) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
+
   if (impressions === 0 && clicks === 0 && conversions === 0) {
     return (
       <div className="flex h-[300px] items-center justify-center text-muted-foreground">
@@ -26,19 +29,24 @@ export function FunnelChart({ impressions, clicks, conversions }: FunnelChartPro
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <BarChart data={data} layout="vertical" barCategoryGap={40}>
+    <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+      <BarChart
+        data={data}
+        layout="vertical"
+        barCategoryGap={isMobile ? 20 : 40}
+        margin={isMobile ? { top: 5, right: 10, left: 0, bottom: 5 } : { top: 5, right: 30, left: 20, bottom: 5 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
         <XAxis
           type="number"
           tickFormatter={formatCompactNumber}
-          fontSize={12}
+          fontSize={isMobile ? 10 : 12}
         />
         <YAxis
           type="category"
           dataKey="stage"
-          fontSize={12}
-          width={80}
+          fontSize={isMobile ? 10 : 12}
+          width={isMobile ? 70 : 80}
         />
         <Tooltip
           cursor={false}

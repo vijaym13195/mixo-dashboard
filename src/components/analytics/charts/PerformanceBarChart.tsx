@@ -7,6 +7,7 @@ import { Campaign, CampaignInsight } from '@/lib/types';
 import { transformToPerformanceData } from '../utils/dataTransformers';
 import { formatCompactNumber, formatCurrency, formatPercentage } from '../utils/chartFormatters';
 import { PERFORMANCE_COLORS } from '../utils/chartColors';
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 
 interface PerformanceBarChartProps {
   campaigns: Array<Campaign & { insights?: CampaignInsight }>;
@@ -29,6 +30,7 @@ const METRIC_CONFIG: Record<
 
 export function PerformanceBarChart({ campaigns }: PerformanceBarChartProps) {
   const [metric, setMetric] = useState<Metric>('impressions');
+  const isMobile = useMediaQuery('(max-width: 640px)');
 
   const data = transformToPerformanceData(campaigns, metric, 10);
 
@@ -54,45 +56,50 @@ export function PerformanceBarChart({ campaigns }: PerformanceBarChartProps) {
         onValueChange={(value) => setMetric(value as Metric)}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
-          <TabsTrigger value="impressions" className="text-xs">
+        <TabsList className={`grid w-full ${isMobile ? 'grid-cols-2 h-auto gap-1' : 'grid-cols-3 lg:grid-cols-7'}`}>
+          <TabsTrigger value="impressions" className="text-[10px] sm:text-xs py-1.5 px-2">
             Impressions
           </TabsTrigger>
-          <TabsTrigger value="clicks" className="text-xs">
+          <TabsTrigger value="clicks" className="text-[10px] sm:text-xs py-1.5 px-2">
             Clicks
           </TabsTrigger>
-          <TabsTrigger value="conversions" className="text-xs">
+          <TabsTrigger value="conversions" className="text-[10px] sm:text-xs py-1.5 px-2">
             Conversions
           </TabsTrigger>
-          <TabsTrigger value="spend" className="text-xs">
+          <TabsTrigger value="spend" className="text-[10px] sm:text-xs py-1.5 px-2">
             Spend
           </TabsTrigger>
-          <TabsTrigger value="ctr" className="text-xs">
+          <TabsTrigger value="ctr" className="text-[10px] sm:text-xs py-1.5 px-2">
             CTR
           </TabsTrigger>
-          <TabsTrigger value="cpc" className="text-xs">
+          <TabsTrigger value="cpc" className="text-[10px] sm:text-xs py-1.5 px-2">
             CPC
           </TabsTrigger>
-          <TabsTrigger value="conversion_rate" className="text-xs">
+          <TabsTrigger value="conversion_rate" className="text-[10px] sm:text-xs py-1.5 px-2">
             Conv. Rate
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
-      <ResponsiveContainer width="100%" height={450}>
-        <BarChart data={data} layout="vertical" barCategoryGap={15}>
+      <ResponsiveContainer width="100%" height={isMobile ? 400 : 450}>
+        <BarChart
+          data={data}
+          layout="vertical"
+          barCategoryGap={isMobile ? 10 : 15}
+          margin={isMobile ? { top: 5, right: 10, left: 0, bottom: 5 } : { top: 5, right: 30, left: 20, bottom: 5 }}
+        >
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis
             type="number"
             tickFormatter={config.formatter}
-            fontSize={12}
+            fontSize={isMobile ? 10 : 12}
           />
           <YAxis
             type="category"
             dataKey="name"
-            tickFormatter={(value) => truncateName(value as string, 30)}
-            fontSize={11}
-            width={100}
+            tickFormatter={(value) => truncateName(value as string, isMobile ? 15 : 30)}
+            fontSize={isMobile ? 9 : 11}
+            width={isMobile ? 70 : 100}
           />
           <Tooltip
             cursor={false}

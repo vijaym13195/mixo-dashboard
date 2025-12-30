@@ -3,12 +3,15 @@ import { Campaign } from '@/lib/types';
 import { transformToPlatformDistribution } from '../utils/dataTransformers';
 import { PLATFORM_COLORS } from '../utils/chartColors';
 import { formatNumber, formatPercentage } from '../utils/chartFormatters';
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 
 interface PlatformPieChartProps {
   campaigns: Campaign[];
 }
 
 export function PlatformPieChart({ campaigns }: PlatformPieChartProps) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
+
   if (!campaigns || campaigns.length === 0) {
     return (
       <div className="flex h-[300px] items-center justify-center text-muted-foreground">
@@ -21,15 +24,15 @@ export function PlatformPieChart({ campaigns }: PlatformPieChartProps) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <PieChart>
+    <ResponsiveContainer width="100%" height={isMobile ? 350 : 300}>
+      <PieChart margin={isMobile ? { top: 10, right: 10, bottom: 40, left: 10 } : { top: 0, right: 0, bottom: 0, left: 0 }}>
         <Pie
           data={data}
           cx="50%"
-          cy="50%"
+          cy={isMobile ? "40%" : "50%"}
           labelLine={false}
           label={renderCustomLabel}
-          outerRadius={80}
+          outerRadius={isMobile ? 70 : 80}
           paddingAngle={2}
           dataKey="value"
           activeShape={false}
@@ -53,15 +56,15 @@ export function PlatformPieChart({ campaigns }: PlatformPieChartProps) {
           }}
         />
         <Legend
-          verticalAlign="middle"
-          align="right"
-          layout="vertical"
+          verticalAlign={isMobile ? "bottom" : "middle"}
+          align={isMobile ? "center" : "right"}
+          layout={isMobile ? "horizontal" : "vertical"}
           formatter={(value: string, entry: any) => {
             const payload = entry.payload;
             const percentage = formatPercentage((payload.value / total) * 100);
             return (
-              <span className="text-sm">
-                {value}: {payload.value} ({percentage})
+              <span className="text-[10px] sm:text-xs md:text-sm">
+                {value}: {payload.value} {isMobile ? '' : `(${percentage})`}
               </span>
             );
           }}

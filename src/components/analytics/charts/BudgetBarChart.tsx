@@ -3,12 +3,14 @@ import { Campaign, CampaignInsight } from '@/lib/types';
 import { transformToBudgetComparison } from '../utils/dataTransformers';
 import { formatCurrency, formatPercentage } from '../utils/chartFormatters';
 import { BUDGET_COLORS } from '../utils/chartColors';
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 
 interface BudgetBarChartProps {
   campaigns: Array<Campaign & { insights?: CampaignInsight }>;
 }
 
 export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const data = transformToBudgetComparison(campaigns, 8);
 
   if (data.length === 0) {
@@ -25,20 +27,25 @@ export function BudgetBarChart({ campaigns }: BudgetBarChartProps) {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data} barCategoryGap={25} layout="vertical">
+    <ResponsiveContainer width="100%" height={isMobile ? 450 : 350}>
+      <BarChart
+        data={data}
+        barCategoryGap={isMobile ? 10 : 25}
+        layout="vertical"
+        margin={isMobile ? { top: 5, right: 10, left: 0, bottom: 5 } : { top: 5, right: 30, left: 20, bottom: 5 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
         <XAxis
           type="number"
           tickFormatter={formatCurrency}
-          fontSize={12}
+          fontSize={isMobile ? 10 : 12}
         />
         <YAxis
           type="category"
           dataKey="name"
-          tickFormatter={(value) => truncateName(value as string, 25)}
-          fontSize={11}
-          width={100}
+          tickFormatter={(value) => truncateName(value as string, isMobile ? 15 : 25)}
+          fontSize={isMobile ? 9 : 11}
+          width={isMobile ? 70 : 100}
         />
         <Tooltip
           cursor={false}
