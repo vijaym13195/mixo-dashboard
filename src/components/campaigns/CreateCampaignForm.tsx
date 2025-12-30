@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Check, ChevronsUpDown } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +25,21 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { useCampaigns } from "@/lib/hooks/useCampaigns";
 
 const PLATFORMS = [
     { id: "meta", label: "Meta (Facebook/Instagram)" },
@@ -58,6 +75,31 @@ interface CreateCampaignFormProps {
 
 export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormProps) {
     const [isLoading, setIsLoading] = useState(false);
+    const [open, setOpen] = useState(false); // Popover open state for combobox
+
+    // Fetch campaigns to get available brand IDs
+    const { data: campaigns } = useCampaigns();
+
+    // Extract unique brands from existing campaigns
+    const uniqueBrands = Array.from(new Set(campaigns?.map(c => c.brand_id))).filter(Boolean).map(id => ({
+        id,
+        name: id // Using ID as name since we don't have separate brand names
+    }));
+
+    // Extract unique platforms from existing campaigns
+    const uniquePlatforms = Array.from(new Set(campaigns?.flatMap(c => c.platforms))).filter(Boolean).map(id => ({
+        id,
+        label: id.charAt(0).toUpperCase() + id.slice(1) // Capitalize first letter for label
+    }));
+
+    // Fallback if no platforms found in data
+    const platformsToList = uniquePlatforms.length > 0 ? uniquePlatforms : [
+        { id: "meta", label: "Meta" },
+        { id: "google", label: "Google" },
+        { id: "linkedin", label: "LinkedIn" },
+        { id: "tiktok", label: "TikTok" },
+        { id: "twitter", label: "Twitter" },
+    ];
 
     // 1. Define your form.
     const form = useForm({
@@ -118,11 +160,58 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                             control={form.control}
                             name="brand_id"
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="flex flex-col">
                                     <FormLabel>Brand ID</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="e.g., brand_123" {...field} />
-                                    </FormControl>
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={open}
+                                                    className={cn(
+                                                        "w-full justify-between font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value
+                                                        ? uniqueBrands.find((brand) => brand.id === field.value)?.name
+                                                        : "Select brand ID..."}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[200px] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Search brand ID..." />
+                                                <CommandList>
+                                                    <CommandEmpty>No brand found.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {uniqueBrands.map((brand) => (
+                                                            <CommandItem
+                                                                key={brand.id}
+                                                                value={brand.name}
+                                                                onSelect={() => {
+                                                                    form.setValue("brand_id", brand.id, { shouldValidate: true });
+                                                                    setOpen(false);
+                                                                }}
+                                                            >
+                                                                <Check
+                                                                    className={cn(
+                                                                        "mr-2 h-4 w-4",
+                                                                        brand.id === field.value
+                                                                            ? "opacity-100"
+                                                                            : "opacity-0"
+                                                                    )}
+                                                                />
+                                                                {brand.name}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -204,7 +293,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                                     <FormLabel className="text-base">Platforms</FormLabel>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 rounded-lg border p-4">
-                                    {PLATFORMS.map((platform) => (
+                                    {platformsToList.map((platform) => (
                                         <FormField
                                             key={platform.id}
                                             control={form.control}
