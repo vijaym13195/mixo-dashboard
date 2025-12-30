@@ -39,71 +39,23 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { useCampaigns } from "@/lib/hooks/useCampaigns";
-
-const PLATFORMS = [
-    { id: "meta", label: "Meta (Facebook/Instagram)" },
-    { id: "google", label: "Google Ads" },
-    { id: "linkedin", label: "LinkedIn" },
-    { id: "tiktok", label: "TikTok" },
-    { id: "twitter", label: "Twitter (X)" },
-];
-
-const formSchema = z.object({
-    name: z.string().min(2, {
-        message: "Campaign name must be at least 2 characters.",
-    }),
-    brand_id: z.string().min(1, {
-        message: "Brand ID is required.",
-    }),
-    status: z.enum(["active", "paused", "completed"]),
-    budget: z.coerce.number().min(1, {
-        message: "Budget must be at least 1.",
-    }),
-    daily_budget: z.coerce.number().min(1, {
-        message: "Daily budget must be at least 1.",
-    }),
-    platforms: z.array(z.string()).refine((value) => value.length > 0, {
-        message: "You must select at least one platform.",
-    }),
-});
+import { campaignFormSchema, type CreateCampaignValues } from "@/lib/schemas/campaign";
+import { useCampaignOptions } from "./useCampaignOptions";
 
 interface CreateCampaignFormProps {
     onCancel?: () => void;
-    onSubmit?: (data: any) => void;
+    onSubmit?: (data: CreateCampaignValues & { created_at: string }) => void;
 }
 
 export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [open, setOpen] = useState(false); // Popover open state for combobox
 
-    // Fetch campaigns to get available brand IDs
-    const { data: campaigns } = useCampaigns();
-
-    // Extract unique brands from existing campaigns
-    const uniqueBrands = Array.from(new Set(campaigns?.map(c => c.brand_id))).filter(Boolean).map(id => ({
-        id,
-        name: id // Using ID as name since we don't have separate brand names
-    }));
-
-    // Extract unique platforms from existing campaigns
-    const uniquePlatforms = Array.from(new Set(campaigns?.flatMap(c => c.platforms))).filter(Boolean).map(id => ({
-        id,
-        label: id.charAt(0).toUpperCase() + id.slice(1) // Capitalize first letter for label
-    }));
-
-    // Fallback if no platforms found in data
-    const platformsToList = uniquePlatforms.length > 0 ? uniquePlatforms : [
-        { id: "meta", label: "Meta" },
-        { id: "google", label: "Google" },
-        { id: "linkedin", label: "LinkedIn" },
-        { id: "tiktok", label: "TikTok" },
-        { id: "twitter", label: "Twitter" },
-    ];
+    const { brands, platforms, isLoading: isLoadingOptions } = useCampaignOptions();
 
     // 1. Define your form.
     const form = useForm({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(campaignFormSchema),
         mode: "onChange",
         defaultValues: {
             name: "",
@@ -118,7 +70,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
     const { isValid } = form.formState;
 
     // 2. Define a submit handler.
-    async function onFormSubmit(values: z.infer<typeof formSchema>) {
+    async function onFormSubmit(values: CreateCampaignValues) {
         setIsLoading(true);
 
         // Simulate API call
@@ -173,10 +125,11 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                                                         "w-full justify-between font-normal",
                                                         !field.value && "text-muted-foreground"
                                                     )}
+                                                    disabled={isLoadingOptions}
                                                 >
                                                     {field.value
-                                                        ? uniqueBrands.find((brand) => brand.id === field.value)?.name
-                                                        : "Select brand ID..."}
+                                                        ? brands.find((brand) => brand.id === field.value)?.name
+                                                        : isLoadingOptions ? "Loading..." : "Select brand ID..."}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </FormControl>
@@ -187,7 +140,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                                                 <CommandList>
                                                     <CommandEmpty>No brand found.</CommandEmpty>
                                                     <CommandGroup>
-                                                        {uniqueBrands.map((brand) => (
+                                                        {brands.map((brand) => (
                                                             <CommandItem
                                                                 key={brand.id}
                                                                 value={brand.name}
@@ -293,7 +246,7 @@ export function CreateCampaignForm({ onCancel, onSubmit }: CreateCampaignFormPro
                                     <FormLabel className="text-base">Platforms</FormLabel>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 rounded-lg border p-4">
-                                    {platformsToList.map((platform) => (
+                                    {platforms.map((platform) => (
                                         <FormField
                                             key={platform.id}
                                             control={form.control}
