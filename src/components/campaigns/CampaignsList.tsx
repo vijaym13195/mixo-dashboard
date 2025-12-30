@@ -39,12 +39,12 @@ export function CampaignsList() {
     setSearchQuery(debouncedSearch);
   }, [debouncedSearch, setSearchQuery]);
 
-  // Update local state when store changes
+  // Update local state when store is cleared (e.g. via Reset Filters)
   useEffect(() => {
-    if (searchQuery !== localSearch && searchQuery === "") {
+    if (searchQuery === "") {
       setLocalSearch("");
     }
-  }, [searchQuery, localSearch]);
+  }, [searchQuery]);
 
   const hasActiveFilters = searchQuery || filters.status.length > 0 || filters.platforms.length > 0;
 
