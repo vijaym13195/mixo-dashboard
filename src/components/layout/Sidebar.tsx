@@ -10,6 +10,7 @@ import {
     Megaphone,
     BarChart3,
     X,
+    Settings,
 } from "lucide-react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
@@ -30,6 +31,12 @@ export function Sidebar({ className }: SidebarProps) {
             icon: BarChart3,
             href: "/analytics",
             active: pathname.startsWith("/analytics"),
+        },
+        {
+            label: "Settings",
+            icon: Settings,
+            href: "/settings",
+            active: pathname.startsWith("/settings"),
         },
     ];
 

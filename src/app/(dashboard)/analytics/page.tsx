@@ -4,6 +4,7 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { useInsights } from "@/lib/hooks/useInsights";
 import { useCampaigns } from "@/lib/hooks/useCampaigns";
 import { useAllCampaignInsights } from "@/lib/hooks/useAllCampaignInsights";
+import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { BarChart3, TrendingUp, Users, Target } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -36,6 +37,7 @@ export default function AnalyticsPage() {
   const { data: insights, isLoading: insightsLoading } = useInsights();
   const { data: campaigns, isLoading: campaignsLoading } = useCampaigns();
   const { campaignsWithInsights, isLoading: combinedLoading } = useAllCampaignInsights();
+  const { chartVisibility } = useSettingsStore();
 
   const isLoading = insightsLoading || campaignsLoading || combinedLoading;
 
@@ -101,67 +103,77 @@ export default function AnalyticsPage() {
       >
         {/* Distribution Charts */}
         <div className="grid gap-6 md:grid-cols-2">
-          <motion.div variants={itemVariants}>
-            <ChartCard
-              title="Campaign Status"
-              description="Distribution of campaign statuses"
-              isLoading={isLoading}
-            >
-              <StatusDonutChart
-                activeCampaigns={insights?.active_campaigns || 0}
-                pausedCampaigns={insights?.paused_campaigns || 0}
-                completedCampaigns={insights?.completed_campaigns || 0}
-              />
-            </ChartCard>
-          </motion.div>
+          {chartVisibility.campaignStatus && (
+            <motion.div variants={itemVariants}>
+              <ChartCard
+                title="Campaign Status"
+                description="Distribution of campaign statuses"
+                isLoading={isLoading}
+              >
+                <StatusDonutChart
+                  activeCampaigns={insights?.active_campaigns || 0}
+                  pausedCampaigns={insights?.paused_campaigns || 0}
+                  completedCampaigns={insights?.completed_campaigns || 0}
+                />
+              </ChartCard>
+            </motion.div>
+          )}
 
-          <motion.div variants={itemVariants}>
-            <ChartCard
-              title="Platform Breakdown"
-              description="Campaigns by advertising platform"
-              isLoading={isLoading}
-            >
-              <PlatformPieChart campaigns={campaigns || []} />
-            </ChartCard>
-          </motion.div>
+          {chartVisibility.platformBreakdown && (
+            <motion.div variants={itemVariants}>
+              <ChartCard
+                title="Platform Breakdown"
+                description="Campaigns by advertising platform"
+                isLoading={isLoading}
+              >
+                <PlatformPieChart campaigns={campaigns || []} />
+              </ChartCard>
+            </motion.div>
+          )}
         </div>
 
         {/* Conversion Funnel */}
-        <motion.div variants={itemVariants}>
-          <ChartCard
-            title="Conversion Funnel"
-            description="Performance from impressions to conversions"
-            isLoading={isLoading}
-          >
-            <FunnelChart
-              impressions={insights?.total_impressions || 0}
-              clicks={insights?.total_clicks || 0}
-              conversions={insights?.total_conversions || 0}
-            />
-          </ChartCard>
-        </motion.div>
+        {chartVisibility.conversionFunnel && (
+          <motion.div variants={itemVariants}>
+            <ChartCard
+              title="Conversion Funnel"
+              description="Performance from impressions to conversions"
+              isLoading={isLoading}
+            >
+              <FunnelChart
+                impressions={insights?.total_impressions || 0}
+                clicks={insights?.total_clicks || 0}
+                conversions={insights?.total_conversions || 0}
+              />
+            </ChartCard>
+          </motion.div>
+        )}
 
         {/* Budget Utilization */}
-        <motion.div variants={itemVariants}>
-          <ChartCard
-            title="Budget Utilization"
-            description="Campaign budget vs actual spend comparison"
-            isLoading={isLoading}
-          >
-            <BudgetBarChart campaigns={campaignsWithInsights} />
-          </ChartCard>
-        </motion.div>
+        {chartVisibility.budgetUtilization && (
+          <motion.div variants={itemVariants}>
+            <ChartCard
+              title="Budget Utilization"
+              description="Campaign budget vs actual spend comparison"
+              isLoading={isLoading}
+            >
+              <BudgetBarChart campaigns={campaignsWithInsights} />
+            </ChartCard>
+          </motion.div>
+        )}
 
         {/* Performance Comparison */}
-        <motion.div variants={itemVariants}>
-          <ChartCard
-            title="Top Performing Campaigns"
-            description="Campaigns ranked by performance metrics"
-            isLoading={isLoading}
-          >
-            <PerformanceBarChart campaigns={campaignsWithInsights} />
-          </ChartCard>
-        </motion.div>
+        {chartVisibility.performanceComparison && (
+          <motion.div variants={itemVariants}>
+            <ChartCard
+              title="Top Performing Campaigns"
+              description="Campaigns ranked by performance metrics"
+              isLoading={isLoading}
+            >
+              <PerformanceBarChart campaigns={campaignsWithInsights} />
+            </ChartCard>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );
